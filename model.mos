@@ -1,0 +1,40 @@
+model ModelName
+  options noimplicit
+  uses "mmxprs"
+  !why does the PHES in description differ from whats in table
+  declarations
+    ! sets 
+    K: set of string ! set of equipment types 
+    P_bar_k: array(k) of real !fixed in operational problem 
+    C_CPX_k: array(k) of real
+    C_OPX_k:array(k) of real
+    U_g:array(k) of real
+    
+    E_PHES: real
+    Q_bar: real
+    !Params 
+    
+    P_Av_k: array(k) of mpvar 
+
+    Objective:linctr
+  end-declarations
+  
+  initializations from "Task.dat"
+    K P_bar_k C_CPX_k
+    C_OPX_k U_g E_PHES Q_bar P_Av_k
+end-initializations
+
+
+
+!Objective Function: Average Hoursly cost 
+
+! should i seperate out that cQ-cpx. 
+
+
+cost := sum(k in K) C_CPX_k(k) * P_bar_k(k) + C_OPX_k(k) * P_Av_k(k) + C_CPX_k(6) * Q_bar
+
+  
+  
+  
+  
+end-model

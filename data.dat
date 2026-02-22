@@ -1,0 +1,12 @@
+
+Equipment: [Coal CCGT Nucl Wind Solar PHES]
+P_bar_k : [25 20 10 20.775 13.146 1]
+
+C_OPX_k : [17.9 29.2 15 0 0 2.3]
+U_g : [0.837 0.342 0 0 0 0 ]
+
+C_CPX_k: [9.9 4 20.4 11.7 3.9 9.3]
+
+Q_bar: 6
+
+E_PHES: 0.7 
