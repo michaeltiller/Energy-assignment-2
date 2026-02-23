@@ -1,40 +1,75 @@
 model ModelName
   options noimplicit
-  uses "mmxprs"
+  uses "mmxprs", "mmsheet"
   !why does the PHES in description differ from whats in table
   declarations
-    ! sets 
-    K: set of string ! set of equipment types 
-    P_bar_k: array(k) of real !fixed in operational problem 
-    C_CPX_k: array(k) of real
-    C_OPX_k:array(k) of real
-    U_g:array(k) of real
-    
+    ! sets
+    K: set of string ! set of equipment types
+
+    !vars
+
+    P_bar_k: array(K) of real !fixed in operational problem
+    C_CPX_k: array(K) of real
+    C_OPX_k:array(K) of real
+    U_g:array(K) of real
     E_PHES: real
     Q_bar: real
-    !Params 
-    
-    P_Av_k: array(k) of mpvar 
+
+    dem: dynamic array(range) of real
+    wind: dynamic array(range) of real
+    sol: dynamic array(range) of real
+
+    !Params
+
+    P_Av_k: array(K) of mpvar
 
     Objective:linctr
   end-declarations
-  
-  initializations from "Task.dat"
+
+  initializations from "data.dat"
     K P_bar_k C_CPX_k
-    C_OPX_k U_g E_PHES Q_bar P_Av_k
+    C_OPX_k U_g E_PHES Q_bar
 end-initializations
 
 
+!Load the CSV
 
-!Objective Function: Average Hoursly cost 
+!-----------------------------
+! Load CSV (space-separated)
+!-----------------------------
+!initializations from "mmsheet.excel:Y15_v4.xlsx"
+!      dem as "noindex;[WSDT2015$C" + (TB) + ":C" + (TE) + "]"
+!      wind as "noindex;[WSDT2015$D" + (TB) + ":D" + (TE) + "]"
+!      sol as "noindex;[WSDT2015$E" + (TB) + ":E" + (TE) + "]"
+!end initializations
 
-! should i seperate out that cQ-cpx. 
+
+initializations from "mmsheet.excel:Y15_v4.xlsx"
+      dem as "noindex;[WSDT2015$C" + (100) + ":C" + (150) + "]"
+      wind as "noindex;[WSDT2015$D" + (100) + ":D" + (150) + "]"
+      sol as "noindex;[WSDT2015$E" + (100) + ":E" + (150) + "]"
+end-initializations
+
+!-----------------------------
+! Print first 5 rows
+!-----------------------------
+writeln("First 5 rows:")
+forall  (i in  1..5) do
+    writeln(
+            " | Demand: ", dem(i),
+            " | Wind: ", wind(i),
+            " | Solar: ", sol(i))
+end-do
+
+end-model
+
+!Objective Function: Average Hoursly cost
+
+! should i seperate out that cQ-cpx???.
+
+!operational Problem set C-CPX = 0 and C-QCPX = 0
+
+!cost := sum(k in K) C_CPX_k(k) * P_bar_k(k) + C_OPX_k(k) * P_Av_k(k) + C_CPX_k(6) * Q_bar
 
 
-cost := sum(k in K) C_CPX_k(k) * P_bar_k(k) + C_OPX_k(k) * P_Av_k(k) + C_CPX_k(6) * Q_bar
-
-  
-  
-  
-  
 end-model
