@@ -5,7 +5,7 @@ model ModelName
   declarations
     ! sets
     K: set of string ! set of equipment types
-
+    T= 1..17520
     !vars
 
     P_bar_k: array(K) of real !fixed in operational problem
@@ -15,9 +15,10 @@ model ModelName
     E_PHES: real
     Q_bar: real
 
-    dem: dynamic array(range) of real
-    wind: dynamic array(range) of real
-    sol: dynamic array(range) of real
+    !dem: dynamic array(range) of real
+    dem: array(T) of real
+    wind: array(T) of real
+    sol: array(T) of real
 
     !Params
 
@@ -45,21 +46,14 @@ end-initializations
 
 
 initializations from "mmsheet.excel:Y15_v4.xlsx"
-      dem as "noindex;[WSDT2015$C" + (100) + ":C" + (150) + "]"
-      wind as "noindex;[WSDT2015$D" + (100) + ":D" + (150) + "]"
-      sol as "noindex;[WSDT2015$E" + (100) + ":E" + (150) + "]"
+  dem  as "noindex;[WSDT2015$C2:C17521]"
+  wind as "noindex;[WSDT2015$D2:D17521]"
+  sol  as "noindex;[WSDT2015$E2:E17521]"
 end-initializations
-
 !-----------------------------
 ! Print first 5 rows
 !-----------------------------
-writeln("First 5 rows:")
-forall  (i in  1..5) do
-    writeln(
-            " | Demand: ", dem(i),
-            " | Wind: ", wind(i),
-            " | Solar: ", sol(i))
-end-do
+
 
 end-model
 
